@@ -9,9 +9,10 @@ module PrismicController
   end
 
   # Setting @ref as the actual ref id being queried, even if it's the master ref.
-  # To be used to call the API, for instance: api.form('everything').submit(ref)
+  # To be used to call the API, for instance: api.form('everything').submit(ref).
+  # Note that this is the ref ID (the "ref" field of a ref), the one to be used to query.
   def ref
-    @ref ||= maybe_ref || api.master_ref.ref
+    @ref ||= (params[:ref].blank? ? api.master_ref.ref : api.refs.select{|_, ref| ref.id == params[:ref]}.values[0].ref)
   end
 
   # Setting @maybe_ref as the ref id being queried, or nil if it is the master ref.
@@ -19,6 +20,7 @@ module PrismicController
   # For instance:
   #  * you can use it to call Rails routes: document_path(ref: maybe_ref), which will add "?ref=refid" as a param, but only when needed.
   #  * you can pass it to your link_resolver method, which will use it accordingly.
+  # Note that this is the release ID (the "is" field of a ref), the one to be used in your URL.
   def maybe_ref
     @maybe_ref ||= (params[:ref].blank? ? nil : params[:ref])
   end

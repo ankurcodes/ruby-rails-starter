@@ -33,7 +33,7 @@ module PrismicHelper
 
   # Return the actual used reference
   def ref
-    @ref ||= maybe_ref || api.master_ref.ref
+    @ref ||= (params[:ref].blank? ? api.master_ref.ref : api.refs.select{|_, ref| ref.id == params[:ref]}.values[0].ref)
   end
 
   # Return the set reference

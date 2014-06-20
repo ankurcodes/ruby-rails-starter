@@ -9,6 +9,7 @@
 <body>
 
 <header>
+  <%= debug(api.refs) %>
   <% if privileged_access? %>
     <div id="toolbar">
       <form method="GET">
@@ -20,7 +21,7 @@
           <option value="" <% if ref == api.master %>selected="selected"<% end %>>As currently seen by guest visitors</option>
           <optgroup label="Or preview the website in a future release:">
             <% api.refs.reject{|_,r| r.master? }.each do |_, r| %>
-              <option value="<%= r.ref %>" <% if ref == r.ref %>selected="selected"<% end %>>
+              <option value="<%= r.id %>" <% if params[:ref] == r.id %>selected="selected"<% end %>>
                 As <%= r.label %> <%= r.scheduled_at.try(:strftime, "%Y-%m-%d") %>
               </option>
             <% end %>
