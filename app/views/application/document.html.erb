@@ -5,3 +5,16 @@
 	%>
 	<%= @document.as_html_safe(link_resolver(maybe_ref)) %>
 </article>
+
+
+<% if @linked_documents %>
+	<hr>
+	<aside>
+		<h2>Linked documents:</h2>
+		<ul>
+			<% @linked_documents.each do |linked_document| %>
+				<li><%= link_to linked_document.first_title || "Untitled document", link_resolver(maybe_ref).link_to(linked_document) %></li>
+			<% end %>
+		</ul>
+	</aside>
+<% end %>

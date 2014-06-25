@@ -28,6 +28,9 @@ class ApplicationController < ActionController::Base
     if !@slug_checker[:correct]
       render inline: "Document not found", status: :not_found if !@slug_checker[:redirect]
       redirect_to document_path(id, @document.slug), status: :moved_permanently if @slug_checker[:redirect]
+    else
+      # Since I want to list linked documents, I'm querying them right away
+      @linked_documents = PrismicService.get_documents(@document.linked_documents.map(&:id), api, ref) if !@document.linked_documents.blank?
     end
   end
 

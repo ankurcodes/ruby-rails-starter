@@ -37,6 +37,19 @@ module PrismicService
       documents.length == 0 ? nil : documents.first
     end
 
+    # Gets a list of documents, from an array of their IDs, in the right order
+    # Returns an array of Document objects
+    # This is more performant than querying for each document, as it does only one query
+    def get_documents(ids, api, ref)
+      ids_as_string = ids.map{|id| "\"#{id}\""}.join(', ')
+      documents = api.form("everything")
+                     .query("[[:d = any(document.id, ["+ids_as_string+"])]]")
+                     .submit(ref)
+      # Reordering the documents in the original order of IDs
+      documents_by_id = documents.results.index_by{|document| document.id}
+      ids.map{|id| documents_by_id[id] }
+    end
+
     # Checks if the slug is the right one for the document.
     # You can change this depending on your URL strategy.
     def slug_checker(document, slug)
